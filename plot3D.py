@@ -43,7 +43,7 @@ def plot3D_normals(ax, spx):
         v_list = list(spx.vertices).copy()
         vi = v_list.pop(i)
         c = (np.mean(np.array(v_list), axis=0))
-        p = c + 1*l*spx.h[i,:]
+        p = c + 0.05*l*spx.h[i,:]
         ax.plot([c[0], p[0]], [c[1], p[1]], [c[2], p[2]], "--g", label="Normals")
 
 
