@@ -87,14 +87,23 @@ Curb = pg.Rect(left_c, top_c, width_c, height_c)
 
 
 class Car():
-    def __init__(self):
+    def __init__(self, trej):
         self.x = 0      # m
         self.y = 0      # m
         self.theta = 0      # rad
         self.v = 0      # m/s
         self.phi = 0    # rad
         self.L = 2.468      # m (Wheel Base)
+        self.t_trej = trej[0]
+        self.trej = trej[1]
 
+    def update_state(self, t):
+        """update the state by interpolating the trajectory"""
+        self.x = np.interp(t, self.t_trej, self.trej[:, 0])
+        self.y = np.interp(t, self.t_trej, self.trej[:, 1])
+        self.theta = np.interp(t, self.t_trej, self.trej[:, 2])
+        self.v = np.interp(t, self.t_trej, self.trej[:, 3])
+        self.phi = np.interp(t, self.t_trej, self.trej[:, 4])
 
 def get_car(Car):
     """ Draw car on the screen with right coordinates"""

@@ -21,6 +21,7 @@ class Game:
         self.theta_hist = []
 
     def run(self):
+        t = 0
         while not self.exit:
             dt = self.clock.get_time()/1000
 
@@ -29,11 +30,7 @@ class Game:
                 if event.type == pg.QUIT:
                     self.exit = True
 
-            # User input
-            #keys = pg.key.get_pressed()
-            self.car.update_RCP()
-            self.car.update_control()
-            self.car.update_state(dt)
+            self.car.update_state(t)
             car_body, car_rect = get_car(self.car)
             if (car_rect.colliderect(Curb)):
                 self.car.revert_state()
@@ -45,10 +42,6 @@ class Game:
             pickle.dump((self.car.v_RCP, self.car.phi_RCP), open("cin.bin",
             "wb"))
 
-
-            # Logic
-            # Car Logic
-
             # Drawing
             self.screen.fill((0, 0, 0))
             pg.draw.rect(screen, (255, 255, 255), carA)
@@ -57,6 +50,7 @@ class Game:
             self.screen.blit(car_body, car_rect)
 
             pg.display.flip()
+            t = t+dt
             self.clock.tick(self.ticks)
         pg.quit()
 
