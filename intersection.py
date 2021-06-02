@@ -17,14 +17,12 @@ def seg_ray(n, v, vec, segs):
 
     m, *_ = np.shape(segs)
     intsct = []
-    lst_col = np.append(np.ones([n, 1]), np.zeros([1,1]), axis=0)
-    b = np.append(v, np.ones([1, 1]), axis=0)
+    b = v
     for i in range(m-1):
         s_matrix = segs[i:i+2, :]
-        M_vert = np.append(s_matrix, -rs(vec, [1, n]),  axis=0)
-        M = np.append(M_vert, lst_col, axis=1)
+        M = np.append(s_matrix, -rs(vec, [1, n]),  axis=0)
         A = M.T
-        if np.linalg.matrix_rank(A) == n+1:
+        if np.linalg.matrix_rank(A) == n:
             lds = np.linalg.solve(A, b)
             s = lds[0:2, 0]
             l  = lds[-1, 0]
