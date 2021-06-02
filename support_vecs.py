@@ -11,7 +11,7 @@ def which_seg(n, s, phi):
         raise(ValueError("Dimensional Mismatch!!"))
 
     m, _ = np.shape(phi)
-
+    seg_index = []
     for i in range(m-1):
         s_k = rs(phi[i, :], [n, 1])
         s_kp1 = rs(phi[i+1, :], [n, 1])
@@ -26,8 +26,11 @@ def which_seg(n, s, phi):
             mag_c_ = np.linalg.norm(c_)
             mag_ck = np.linalg.norm(ck)
             if mag_c <= mag_ck and mag_c_ <= mag_ck:
-                return i
-    raise(ValueError("Not in the segments"))
+                seg_index.append(i)
+    if seg_index:
+        return max(seg_index)
+    else:
+        raise(ValueError("Not in the segments"))
 
 
 def chain_flow(n, s_in, phi):
