@@ -13,64 +13,51 @@ class ptope():
 
 
 """General way of representing vertex sets using matrices: rows -- vertics"""
+theta_max = np.deg2rad(60)
+theta_min = np.deg2rad(-10)
 
-vobs_vMat = np.matrix([[0, 1],
-                           [0, -3],
-                           [-1, -3],
-                           [-1, 1]])
-hobs_vMat = np.matrix([[0, 1],
-                           [0, 0],
-                           [3, 0],
-                           [3, 1]])
-rgn_vMat = np.matrix([[-5, -6],
-                          [-5, 5],
-                          [5, 5],
-                          [5, -6]])
+CarA_vMat = np.matrix([[2, -1.952, theta_min], [6.198, -1.952, theta_min], [6.198, 0, theta_min], [2, 0, theta_min],
+                       [2, -1.952, theta_max], [6.198, -1.952, theta_max], [6.198, 0, theta_max], [2, 0, theta_max]])
+CarA = ptope(CarA_vMat)
 
-I = np.matrix([[0.5, -1.5],
-               [1.5, -0.5]])
-E = np.matrix([[3, 5],
-               [3, 3],
-               [5, 3]])
-W = np.matrix([[1, -1],
-              [2, -2],
-              [2, -3],
-              [1, -4],
-              [0, -4],
-              [-0.25, -3.9],
-              [-1, -3.9],
-              [-2, -3.75],
-              [-3, -2],
-              [-3, -1],
-              [-3, 1],
-              [-3, 2],
-              [-2, 4],
-              [-1, 3.75],
-              [-0.25, 3.75],
-              [0, 3.75],
-              [1, 3.75],
-              [2, 3.7],
-              [3, 3.7],
-              [4.75, 4.5],
-            ])
+CarB_vMat = np.matrix([[-10.198, 0, theta_min], [-10.198, -1.952, theta_min], [-6, -1.952, theta_min], [-6, 0, theta_min],
+                      [-10.198, 0, theta_max], [-10.198, -1.952, theta_max], [-6, -1.952, theta_max], [-6, 0, theta_max]])
+CarB = ptope(CarB_vMat)
 
-vobs = ptope(vobs_vMat)
-hobs = ptope(hobs_vMat)
-rgn  = ptope(rgn_vMat)
+curb_vMat = np.matrix([[-10.198, -2.002, theta_min], [-10.198, -3.952, theta_min], [6.198, -3.952, theta_min], [6.198, -2.002,      theta_min],
+                       [-10.198, -2.002, theta_max], [-10.198, -3.952, theta_max], [6.198, -3.952, theta_max], [6.198, -2.002, theta_max]])
+curb = ptope(curb_vMat)
 
-ptope_list = [rgn, vobs, hobs]
+rgn_vMat = np.matrix([[2.819, 1.976, theta_min], [2.819, 1.726, theta_min], [-1.379, -0.976, theta_min], [-5.181, -0.976, theta_min], [-5.181, 1.976, theta_min],
+                      [2.819, 1.976, theta_max], [2.819, 1.726, theta_max], [-1.379, -0.976, theta_max], [-5.181, -0.976, theta_max], [-5.181, 1.976, theta_max]])
+rgn = ptope(rgn_vMat)
 
 
-if __name__=="__main__":
-    import matplotlib.pyplot as plt
-    plt.figure()
-    pp.plot_polygon(vobs.vertices)
-    pp.plot_polygon(hobs.vertices)
-    pp.plot_polygon(rgn.vertices)
-    plt.plot(I[:, 0], I[:, 1])
-    plt.plot(E[:, 0], E[:, 1])
-    plt.plot(W[:, 0], W[:, 1])
-    plt.xticks(np.arange(-5, 7))
-    plt.yticks(np.arange(-6, 7))
-    plt.grid()
-    plt.show()
+# Initial box
+I = np.matrix([[2.569, 1.976, 0], [2.319, 1.726, 0], [2.819, 1.726,
+    0]]);
+
+# Eniding Box
+E = np.matrix([[-5.181, -0.676, 0], [-5.181, -0.976, 0], [-1.379,
+    -0.976, 0], [-1.379, -0.676, 0]]);
+
+W = np.matrix([[ 2.519 ,  1.876 ,  0],
+       [ 2.0994,  1.8386,  0.098 ],
+       [ 1.6798,  1.8012,  0.196 ],
+       [ 1.2574,  1.6712,  0.2945],
+       [ 0.835 ,  1.5412,  0.393 ],
+       [ 0.4425,  1.3315,  0.491 ],
+       [ 0.05  ,  1.1218,  0.589 ],
+       [-0.3035,  0.8388,  0.687 ],
+       [-0.657 ,  0.5558,  0.785 ],
+       [-1.01  ,  0.2725,  0.687 ],
+       [-1.363 , -0.0108,  0.589 ],
+       [-1.756 , -0.2203,  0.491 ],
+       [-2.149 , -0.4298,  0.393 ],
+       [-2.5655, -0.5598,  0.2945],
+       [-2.982 , -0.6898,  0.196 ],
+       [-3.407 , -0.7274,  0.098 ],
+       [-3.832 , -0.765 ,  0.    ]])
+
+
+ptope_list = [CarA, CarB, curb, rgn]

@@ -64,8 +64,40 @@ def plot3D_terminal_flow(ax, spx):
                 [spx.vMat[i, 2], 0.2*l*(spx.alphaMat[i, 2]/np.linalg.norm(spx.alphaMat[i,:]))+spx.vMat[i, 2]],
                  "--r", label="Closed-loop Vector Field")
 
-def plot3D_term_spx(spx):
+def plot3D_term_spx(ax, spx):
     """plot the terminal simplex"""
     plot3D_spx(ax, spx)
     plot3D_terminal_flow(ax, spx)
     plot3D_normals(ax, spx)
+
+
+def plot3D_prism(ax, prism, color="-k"):
+    """Plots a prism"""
+    n, _ = np.shape(prism.vMat)
+    F1 = prism.vMat[0:int(n/2), :]
+    F2 = prism.vMat[int(n/2):n, :]
+    p = list(range(int(n/2)))
+    p.append(0)
+    x1 = [F1[i, 0] for i in p]
+    y1 = [F1[i, 1] for i in p]
+    z1 = [F1[i, 2] for i in p]
+    x2 = [F2[i, 0] for i in p]
+    y2 = [F2[i, 1] for i in p]
+    z2 = [F2[i, 2] for i in p]
+    ax.plot(x1, y1, z1, color)
+    ax.plot(x2, y2, z2, color)
+    for i in range(int(n/2)):
+        ax.plot([F1[i, 0], F2[i, 0]],[F1[i, 1], F2[i, 1]], [F1[i, 2], F2[i, 2]], color)
+
+def plot3D_plane(ax, F, color="-k"):
+    """plotting the faces alone"""
+    n, _ = np.shape(F)
+    p = list(range(n))
+    p.append(0)
+    ax.plot([F[i, 0] for i in p], [F[i, 1] for i in p], [F[i, 2] for i in p], color)
+
+def plot3D_waypts(ax, W, color="-k"):
+    """plotting waypoint sets"""
+    n, _ = np.shape(W)
+    p = list(range(n))
+    ax.plot([W[i, 0] for i in p], [W[i, 1] for i in p], [W[i, 2] for i in p], color)
