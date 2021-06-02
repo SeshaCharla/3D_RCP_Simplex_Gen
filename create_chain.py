@@ -6,7 +6,7 @@ from numpy import reshape as rs
 import support_vecs as svc
 import matplotlib.pyplot as plt
 import pypoman as pp
-import plot2D
+import plot3D
 
 
 chain = []

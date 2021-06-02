@@ -61,3 +61,18 @@ W = np.matrix([[ 2.519 ,  1.876 ,  0],
 
 
 ptope_list = [CarA, CarB, curb, rgn]
+
+
+if __name__=="__main__":
+    import matplotlib.pyplot as plt
+    from plot3D import *
+
+    ax = plt.figure().add_subplot(projection="3d")
+    plot3D_prism(ax, CarA)
+    plot3D_prism(ax, CarB)
+    plot3D_prism(ax, curb)
+    plot3D_prism(ax, rgn)
+    plot3D_plane(ax, I)
+    plot3D_plane(ax, E)
+    plot3D_waypts(ax, W)
+    plt.show()
