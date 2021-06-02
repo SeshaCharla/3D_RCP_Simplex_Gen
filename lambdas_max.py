@@ -15,7 +15,7 @@ def lambda_hit(n, v0, alpha0, polytope):
         try:
             if d[i, 0]!= 0:
                 ldi = c[i, 0]/d[i, 0]
-                if ldi>=0 and np.all(A @ (v0 + ldi*alpha0) - b <= 0):
+                if ldi>=0 and np.all(A @ (v0 + ldi*alpha0) - b <= 1e-6):
                     ld.append(ldi)
                 else:
                     ld.append(np.Inf)
