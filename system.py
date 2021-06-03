@@ -5,6 +5,11 @@ v_max = -1.39
 v_min = -2.78
 theta_b = np.deg2rad(33)
 
+u_min = np.matrix([[v_min],
+                   [-theta_b]])
+u_max = np.matrix([[v_max],
+                   [theta_b]])
+
 def f(z, u):
     """The non-linear system
     z = [x    ]     u = [v  ]
@@ -28,10 +33,10 @@ class affine_sys():
 
 #Linearising system about (x0, y0, \theta_0), (v0 = (v_max + v_min)/2, \phi_0 = 0)
 
-def get_linear(z0):
+def get_linear(th0):
     """Returns the linearized system parameters"""
     v0 = (v_max + v_min)/2
-    theta0 = z0[2, 0]
+    theta0 = th0
     A = np.matrix([[0, 0, -v0*np.sin(theta0)],
                    [0, 0,  v0*np.cos(theta0)],
                    [0, 0, 0                 ]])
@@ -40,6 +45,7 @@ def get_linear(z0):
         [np.sin(theta0), 0     ],
         [0             , (v0/L)]])
     a = np.matrix([[v0*theta0*np.sin(theta0) ],
-                   [-v0*theta0*np.cos(theta0)]])
+                   [-v0*theta0*np.cos(theta0)],
+                   [0]])
     asys = affine_sys(A, B, a)
     return asys

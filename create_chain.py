@@ -7,42 +7,42 @@ import support_vecs as svc
 import matplotlib.pyplot as plt
 import pypoman as pp
 import plot3D
+import space as spc
 
 
 chain = []
-n = 2
+n = 3
 F = spc.I
-s_in = np.matrix([[1], [-1]])
-del_s = 1
-u_max = 6*np.ones([2, 1])
-u_min = -6*np.ones([2, 1])
-Sim = cf.init_chain(2, ss.lsys, F, s_in,  u_max, u_min, spc.W, spc.ptope_list)
+s_in = spc.W[0,:].T
+u_max = ss.u_max
+u_min = ss.u_min
+Sim = cf.init_chain(3, F, s_in,  u_max, u_min, spc.W, spc.ptope_list)
 chain.append(Sim)
 j = 0
 old_spx = Sim
-while (svc.which_seg(n, s_in, spc.W) != (np.shape(spc.W))[0] -2):
-    Sim = cf.prop_chain(n, ss.lsys, old_spx, u_max,  u_min, spc.W, spc.ptope_list)
+while (svc.which_seg(n, s_in, spc.W) != (np.shape(spc.W))[0] -2) and j<10:
+    Sim = cf.prop_chain(n, old_spx, u_max,  u_min, spc.W, spc.ptope_list)
     s_in = Sim.so
     chain.append(Sim)
     old_spx = Sim
     j = j + 1
-term_sim = cf.term_chain(2, ss.lsys, chain[-1], u_max, u_min, spc.W)
-chain.append(term_sim)
+# term_sim = cf.term_chain(2, ss.lsys, chain[-1], u_max, u_min, spc.W)
+# chain.append(term_sim)
 
 if __name__=="__main__":
 
     # Plot
-    plt.figure()
-    plt.grid()
-    pp.plot_polygon(spc.vobs.vertices)
-    pp.plot_polygon(spc.hobs.vertices)
-    pp.plot_polygon(spc.rgn.vertices)
-    plt.plot(spc.I[:, 0], spc.I[:, 1])
-    plt.plot(spc.E[:, 0], spc.E[:, 1])
-    plt.plot(spc.W[:, 0], spc.W[:, 1])
-    plt.xticks(np.arange(-5, 7))
-    plt.yticks(np.arange(-6, 7))
-    for sim in chain[0:-1]:
-        plot2D.plot2D_rcpSpx(sim)
-    plot2D.plot2D_term_spx(chain[-1])
+    import matplotlib.pyplot as plt
+    import plot3D
+
+    ax = plt.figure().add_subplot(projection="3d")
+    # plot3D.plot3D_prism(ax, spc.CarA)
+    # plot3D.plot3D_prism(ax, spc.CarB)
+    # plot3D.plot3D_prism(ax, spc.curb)
+    # plot3D.plot3D_prism(ax, spc.rgn)
+    # plot3D.plot3D_plane(ax, spc.I)
+    # #plot3D_plane(ax, E)
+    plot3D.plot3D_waypts(ax, spc.W[0:2+1,:])
+    for spxi in chain:
+        plot3D.plot3D_rcpSpx(ax, spxi)
     plt.show()

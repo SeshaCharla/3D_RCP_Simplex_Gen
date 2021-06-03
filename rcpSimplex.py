@@ -158,7 +158,7 @@ class rcpSimplex(Simplex):
         """ Vertex Flow Vectors """
         self.alphaMat = np.zeros([self.n+1, self.n])
         for i in range(self.n+1):
-            alpha_i = (self.asys.A @ rs((self.vMat[i,:]), [self.n,1]) + self.asys.B @ rs((self.uMat[i,:]), [self.n,1]) + self.asys.a)
+            alpha_i = (self.asys.A @ rs((self.vMat[i,:]), [self.n,1]) + self.asys.B @ rs((self.uMat[i,:]), [self.m,1]) + self.asys.a)
             alpha_n = alpha_i/np.linalg.norm(alpha_i)
             self.alphaMat[i,:] = rs(alpha_n, [1, self.n])
 

@@ -6,25 +6,43 @@ import pypoman as pp
 import normals as nr
 import lambdas_max as lmax
 import support_vecs as svc
+import system as syst
+import space as spc
 
 
-def rcp_simgen(n, asys, F, u0, alpha_r, s_in, u_max, u_min, phi, ptope_list):
+def rcp_simgen(n, F, u0, alpha_r, s_in, u_max, u_min, phi, ptope_list):
     """Returns an RCP simplex with the proper control inputs (column vector) and velocity vectors"""
     eps = 1e-6
+
+    # del_max and support vector
+    s_o, xi = svc.chain_flow(n, s_in, phi)
+    del_s = s_o-s_in
+    del_max = np.linalg.norm(del_s)
+
+    # Getting the linear system
+    del_th = del_s[2, 0]
+    th0 = np.mean(np.matrix(F[:, 2]).A1)
+    if del_th >= 0:   # => \theta is increasing
+        #th0 = np.min(np.matrix(F[:,2]).A1) - 1e-8
+        thp = spc.theta_ptope(th0, increasing=True)
+    else:             # => \theta is decreasing
+        #th0 = np.max(np.matrix(F[:,2]).A1) + 1e-8
+        thp = spc.theta_ptope(th0, increasing=False)
+    asys = syst.get_linear(th0)
+    ptope_list.append(thp)
+
+    # Calculating alpha0
     m =  np.shape(asys.B)[1]
     alpha0_vec = asys.A @ rs(F[0, :], [n, 1]) + asys.B @ u0 + asys.a          # not normalized
     alpha0 = alpha0_vec/np.linalg.norm(alpha0_vec)                            # normalized
+
     # Sanity Checks
-    if alpha0.T @ alpha_r <= eps:            # alpha0 and alpha_r are not aligned
+    if alpha0.T @ alpha_r <= 0.1:            # alpha0 and alpha_r are not aligned
         raise(ValueError("The generation vector is not aligned with closed loop vector!"))
     if n != np.shape(F)[0] or n!=np.shape(F)[1]:
         raise(ValueError("Dimensions don't match!"))
     if m!=np.shape(u0)[0]:
         raise(ValueError("Dimensions of u don't match!"))
-
-    # del_max and support vector
-    s_o, xi = svc.chain_flow(n, s_in, phi)
-    del_max = np.linalg.norm(s_o-s_in)
 
     # Calculate Lmax
     Lmax = lmax.lambda_max(n, rs(F[0, :], [n, 1]), alpha0, phi, ptope_list, del_max)
@@ -69,7 +87,7 @@ def rcp_simgen(n, asys, F, u0, alpha_r, s_in, u_max, u_min, phi, ptope_list):
     prob = cvx.Problem(cvx.Maximize(obj), constraints=constraints)
     if not prob.is_dcp():
         raise(ValueError("The problem doesn't follow DCP rules!!"))
-    prob.solve()
+    prob.solve(solver="SCS")
     if prob.status in ["infeasible", "unbounded"]:
         raise(ValueError("The optimization problem is {}.\nCheck control input Limits!!".format(prob.status)))
     #u Matrix

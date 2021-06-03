@@ -11,6 +11,16 @@ class ptope():
         self.vertices = [self.vMat[i, :].A1 for i in range(n)]
         self.A, self.b = pp.duality.compute_polytope_halfspaces(self.vertices)
 
+class theta_ptope():
+    """Polytope for linearization"""
+    def __init__(self, th0, increasing=True):
+        self.A = np.matrix([[0, 0, -1],
+                            [0, 0, 1]])
+        if increasing:
+            self.b = np.array([-(th0-np.deg2rad(1.25)), th0+np.deg2rad(10)])
+        else:
+            self.b = np.array([-(th0-np.deg2rad(10)), th0+np.deg2rad(1.25)])
+
 
 """General way of representing vertex sets using matrices: rows -- vertics"""
 theta_max = np.deg2rad(60)
@@ -28,8 +38,11 @@ curb_vMat = np.matrix([[-10.198, -2.002, theta_min], [-10.198, -3.952, theta_min
                        [-10.198, -2.002, theta_max], [-10.198, -3.952, theta_max], [6.198, -3.952, theta_max], [6.198, -2.002, theta_max]])
 curb = ptope(curb_vMat)
 
-rgn_vMat = np.matrix([[2.819, 1.976, theta_min], [2.819, 1.726, theta_min], [-1.379, -0.976, theta_min], [-5.181, -0.976, theta_min], [-5.181, 1.976, theta_min],
-                      [2.819, 1.976, theta_max], [2.819, 1.726, theta_max], [-1.379, -0.976, theta_max], [-5.181, -0.976, theta_max], [-5.181, 1.976, theta_max]])
+# rgn_vMat = np.matrix([[2.819, 1.976, theta_min], [2.819, 1.726, theta_min], [-1.379, -0.976, theta_min], [-5.181, -0.976, theta_min], [-5.181, 1.976, theta_min],
+#                       [2.819, 1.976, theta_max], [2.819, 1.726, theta_max], [-1.379, -0.976, theta_max], [-5.181, -0.976, theta_max], [-5.181, 1.976, theta_max]])
+
+rgn_vMat = np.matrix([[3, 2.1, theta_min], [3, 1.5, theta_min], [-1.1, -1.1, theta_min], [-5.4, -1.1, theta_min], [-5.4, 2.1, theta_min],
+                      [3, 2.1, theta_max], [3, 1.5, theta_max], [-1.1, -1.1, theta_max], [-5.4, -1.1, theta_max], [-5.4, 2.1, theta_max]])
 rgn = ptope(rgn_vMat)
 
 
@@ -60,7 +73,7 @@ W = np.matrix([[ 2.519 ,  1.876 ,  0],
        [-3.832 , -0.765 ,  0.    ]])
 
 
-ptope_list = [CarA, CarB, curb, rgn]
+ptope_list = [rgn]
 
 
 if __name__=="__main__":
