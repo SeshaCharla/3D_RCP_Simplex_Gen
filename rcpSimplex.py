@@ -94,27 +94,6 @@ class rcpSimplex(Simplex):
         else:
             raise(ValueError("The facet is not intersecting the curve!!"))
 
-    # def calc_ourward_normals(self):
-    #     """ Calculates the matrix of outward normals of all the facets"""
-    #     self.F = []    # Facets
-    #     self.h = np.zeros([self.n+1, self.n])
-    #     for i in range(self.n+1):
-    #         I = list(np.arange(0, self.n+1))
-    #         j = I.pop(i)    # Facet index set
-    #         fMat = np.zeros([self.n, self.n]) # Facet vertex Matrix
-    #         for k in range(self.n):
-    #             fMat[k, :] = self.vMat[I[k], :]
-    #         self.F.append(fMat)
-    #         vecMat = np.zeros([self.n-1, self.n])
-    #         for l in range(self.n-1):
-    #             vecMat[l, :] = fMat[l+1, :] - fMat[0, :]
-    #         h_n = nr.normal(vecMat, self.n)
-    #         edge = rs(self.vMat[j,:] - fMat[0,:], [self.n, 1]) # drawing normal from the the facet point to the opposite point
-    #         edge_n = edge/np.linalg.norm(edge)
-    #         if (h_n.T @ edge_n) > 0 :      # Normal at the point should be opposite to the edge
-    #             h_n = -h_n
-    #         self.h[i, :] = rs(h_n, [1, self.n])
-
     def optimize_inputs(self):
         """Runs a new optimization problem to update inputs"""
         eps = 1e-6
@@ -168,10 +147,6 @@ class rcpSimplex(Simplex):
         F_aug = np.append(Fo, Fo, axis=0)
         alpha_o = self.alphaMat[1:, :]
         align_vecs = alpha_o @ self.xi
-        # j = np.argmax(align_vecs)          # alpha_0 is removed
-        # self.F_next = F_aug[j:j+self.n, :] #v0 is removed
-        # self.u0_next = rs(self.uMat[j+1, :], [self.m, 1])      # u0 is not removed
-        # self.alpha0_next = rs(self.alphaMat[j+1, :], [self.n, 1])
         self.F_next_list = []
         self.u_next_list = []
         self.alpha_next_list = []
@@ -182,7 +157,6 @@ class rcpSimplex(Simplex):
                 self.u_next_list.append(rs(self.uMat[i+1, :], [self.m, 1]))        # u0 is not removed
                 self.alpha_next_list.append(rs(self.alphaMat[i+1,:], [self.n, 1])) # alpha_0 is not removed
         self.next_list = zip(self.F_next_list, self.u_next_list, self.alpha_next_list)
-
 
     def in_simplex(self, x):
         """x is np array"""
