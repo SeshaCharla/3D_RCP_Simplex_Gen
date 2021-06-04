@@ -97,9 +97,12 @@ def prop_chain(n, old_spx, u_max, u_min, phi, ptope_list):
     elif spx_alt_list:
         return spx_alt_list[np.argmax(spx_alt_cerr_list)]
     else:
-        raise(ValueError("No possible simplex!!"))
+        try:
+            spx, ld = simgen.rcp_simgen(n, old_spx.F_last, old_spx.u0_last, old_spx.alpha_last, old_spx.so, u_max, u_min, phi, ptope_list)
+        except:
+            raise(ValueError("No possible simplex!!"))
 
 def term_chain(n, asys, old_spx, u_max, u_min, phi):
-    """Terminate the chain of simplices by creating simplx with equilibrium inside"""
+    """Terminate the chain of simplices by creating simplex with equilibrium inside"""
     F = old_spx.vMat[1:, :]
     return rspx.terminalSimplex(n, asys, F, phi, u_max, u_min)

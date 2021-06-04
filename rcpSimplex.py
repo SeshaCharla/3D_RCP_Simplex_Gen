@@ -156,6 +156,9 @@ class rcpSimplex(Simplex):
                 self.F_next_list.append(F_aug[i:i+self.n, :])     #v0 is removed
                 self.u_next_list.append(rs(self.uMat[i+1, :], [self.m, 1]))        # u0 is not removed
                 self.alpha_next_list.append(rs(self.alphaMat[i+1,:], [self.n, 1])) # alpha_0 is not removed
+        self.F_last = self.F_next_list.pop(-1)
+        self.u0_last = self.u_next_list.pop(-1)
+        self.alpha_last = self.alpha_next_list.pop(-1)
         self.next_list = zip(self.F_next_list, self.u_next_list, self.alpha_next_list)
 
     def in_simplex(self, x):
