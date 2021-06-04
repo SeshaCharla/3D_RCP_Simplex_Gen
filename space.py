@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.core.fromnumeric import ptp
 import pypoman as pp
 from numpy import reshape as rs
 
@@ -51,8 +52,9 @@ I = np.matrix([[2.569, 1.976, 0], [2.319, 1.726, 0], [2.819, 1.726,
     0]]);
 
 # Eniding Box
-E = np.matrix([[-5.181, -0.676, 0], [-5.181, -0.976, 0], [-1.379,
-    -0.976, 0], [-1.379, -0.676, 0]]);
+E_vMat = np.matrix([[-5.181, -0.676, np.deg2rad(-5)], [-5.181, -0.976, np.deg2rad(-5)], [-1.379, -0.976, np.deg2rad(-5)], [-1.379, -0.676, np.deg2rad(-5)],
+               [-5.181, -0.676, np.deg2rad(5)], [-5.181, -0.976, np.deg2rad(5)], [-1.379, -0.976, np.deg2rad(5)], [-1.379, -0.676, np.deg2rad(5)]])
+E = ptope(E_vMat)
 
 W = np.matrix([[ 2.519 ,  1.876 ,  0],
        [ 2.0994,  1.8386,  0.098 ],
@@ -86,6 +88,9 @@ if __name__=="__main__":
     plot3D_prism(ax, curb)
     plot3D_prism(ax, rgn)
     plot3D_plane(ax, I)
-    plot3D_plane(ax, E)
+    plot3D_prism(ax, E)
     plot3D_waypts(ax, W)
+    ax.set_xlim3d(-10, 10)
+    ax.set_ylim3d(-10, 10)
+    ax.set_zlim3d(-1, 2)
     plt.show()
