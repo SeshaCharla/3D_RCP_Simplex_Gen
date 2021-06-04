@@ -20,7 +20,7 @@ Sim = cf.init_chain(3, F, s_in,  u_max, u_min, spc.W, spc.ptope_list)
 chain.append(Sim)
 j = 0
 old_spx = Sim
-while (svc.which_seg(n, s_in, spc.W) != (np.shape(spc.W))[0] -2) and j<10:
+while (svc.which_seg(n, s_in, spc.W) != (np.shape(spc.W))[0] -2) and j<15:
     Sim = cf.prop_chain(n, old_spx, u_max,  u_min, spc.W, spc.ptope_list)
     s_in = Sim.so
     chain.append(Sim)

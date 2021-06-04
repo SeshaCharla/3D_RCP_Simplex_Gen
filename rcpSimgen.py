@@ -10,7 +10,7 @@ import system as syst
 import space as spc
 
 
-def rcp_simgen(n, F, u0, alpha_r, s_in, u_max, u_min, phi, ptope_list):
+def rcp_simgen(n, F, u0, alpha_r, s_in, u_max, u_min, phi, p_list):
     """Returns an RCP simplex with the proper control inputs (column vector) and velocity vectors"""
     eps = 1e-6
 
@@ -21,15 +21,14 @@ def rcp_simgen(n, F, u0, alpha_r, s_in, u_max, u_min, phi, ptope_list):
 
     # Getting the linear system
     del_th = del_s[2, 0]
-    th0 = np.mean(np.matrix(F[:, 2]).A1)
     if del_th >= 0:   # => \theta is increasing
-        #th0 = np.min(np.matrix(F[:,2]).A1) - 1e-8
+        th0 = np.min(np.matrix(F[:,2]).A1) - 1e-8
         thp = spc.theta_ptope(th0, increasing=True)
     else:             # => \theta is decreasing
-        #th0 = np.max(np.matrix(F[:,2]).A1) + 1e-8
+        th0 = np.max(np.matrix(F[:,2]).A1) + 1e-8
         thp = spc.theta_ptope(th0, increasing=False)
     asys = syst.get_linear(th0)
-    ptope_list.append(thp)
+    ptope_list = [thp] + p_list
 
     # Calculating alpha0
     m =  np.shape(asys.B)[1]
@@ -64,7 +63,7 @@ def rcp_simgen(n, F, u0, alpha_r, s_in, u_max, u_min, phi, ptope_list):
         constraints += [xi.T @ (asys.A @ rs(F[i, :], [n, 1]) + asys.B @ u[i-1] + asys.a) >= eps]
         # Invariance Constraints
         I = list(np.arange(1, n+1))    # Index Set
-        _ = I.pop(i-1)                      # Pop the index opposite to current face
+        _ = I.pop(i-1)                 # Pop the index opposite to current face
         for j in I:
             hj = rs(h[j, :], [n, 1])
             constraints += [hj.T @ (asys.A @ rs(F[i, :], [n, 1]) + asys.B @ u[i-1] + asys.a) <= -eps]
@@ -81,15 +80,18 @@ def rcp_simgen(n, F, u0, alpha_r, s_in, u_max, u_min, phi, ptope_list):
     for j in I:
         hj = rs(h[j, :], [n, 1])
         constraints += [hj.T @ (asys.A @ (rs(F[0, :], [n, 1])  + l_gen*alpha0) + asys.B @ u[i-1] + asys.a) <= -eps]
+
     # input constraints
     constraints += [u[i-1] <= u_max, u[i-1]>= u_min]
+
     # The problem
     prob = cvx.Problem(cvx.Maximize(obj), constraints=constraints)
     if not prob.is_dcp():
         raise(ValueError("The problem doesn't follow DCP rules!!"))
-    prob.solve(solver="SCS")
+    prob.solve()
     if prob.status in ["infeasible", "unbounded"]:
         raise(ValueError("The optimization problem is {}.\nCheck control input Limits!!".format(prob.status)))
+
     #u Matrix
     uMat = np.zeros([n+1, m])
     uMat[0, :] = rs(u0, [1, m])
