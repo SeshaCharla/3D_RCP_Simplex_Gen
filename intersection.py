@@ -4,7 +4,6 @@ from numpy import reshape as rs
 
 """Module for functions that do segments to ray intersection and segments to plane intersection"""
 
-
 def seg_ray(n, v, vec, segs):
     """Segment ray intersection
     returns \lambda, which_seg and corresponding deltas if there is an intersection
