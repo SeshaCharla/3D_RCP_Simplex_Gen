@@ -1,9 +1,9 @@
 import numpy as np
 
 L = 2.468       # Car wheel base
-v_max = -1.39
+v_max = -0.1  #-1.39
 v_min = -2.78
-theta_b = np.deg2rad(33)
+theta_b = np.deg2rad(90)   # 33
 
 u_min = np.matrix([[v_min],
                    [-theta_b]])
